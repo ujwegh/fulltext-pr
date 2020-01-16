@@ -11,7 +11,6 @@ import javax.persistence.*;
 import javax.validation.constraints.Min;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Data
 @ToString(callSuper = true)
@@ -36,15 +35,7 @@ public class Product extends BaseEntity {
 
     public Product() {
     }
-
-    public Product(String name, String description, String category, BigDecimal price) {
-        super();
-        this.description = description;
-        this.category = category;
-        this.price = price;
-    }
-
-    public Product(Long id, Date createdDate, Date lastUpdatedDate, String name, String description, String category, BigDecimal price) {
+    public Product(Long id, LocalDateTime createdDate, LocalDateTime lastUpdatedDate, String name, String description, String category, BigDecimal price) {
         super(id, name, createdDate, lastUpdatedDate);
         this.description = description;
         this.category = category;

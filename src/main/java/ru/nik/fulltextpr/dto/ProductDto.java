@@ -1,14 +1,12 @@
 package ru.nik.fulltextpr.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.math.BigDecimal;
 
 @Getter
 @Setter
-@AllArgsConstructor
+@Builder
 public class ProductDto {
     private Long id;
     private String name;

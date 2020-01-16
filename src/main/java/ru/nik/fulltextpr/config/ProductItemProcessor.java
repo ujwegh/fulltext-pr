@@ -7,7 +7,6 @@ import ru.nik.fulltextpr.model.Product;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Slf4j
@@ -22,11 +21,7 @@ public class ProductItemProcessor implements ItemProcessor<Product, Product> {
         if (tabIndex > 0)
             category = description.substring(tabIndex);
 
-        final Product transformedPerson = new Product(longId.incrementAndGet(), new Date(), new Date(), "n", description, category, BigDecimal.valueOf((int) (Math.random() * 100000)));
-
-//        log.info("Converting (" + description + ") into (" + transformedPerson + ")");
-
-        return transformedPerson;
+        return new Product(longId.incrementAndGet(), LocalDateTime.now(), LocalDateTime.now(), "n", description, category, BigDecimal.valueOf((int) (Math.random() * 100000)));
     }
 
 }

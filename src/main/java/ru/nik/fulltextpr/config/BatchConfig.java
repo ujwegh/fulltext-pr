@@ -6,9 +6,7 @@ import org.springframework.batch.core.configuration.annotation.EnableBatchProces
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
-import org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider;
-import org.springframework.batch.item.database.JdbcBatchItemWriter;
-import org.springframework.batch.item.database.builder.JdbcBatchItemWriterBuilder;
+import org.springframework.batch.item.database.JpaItemWriter;
 import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.builder.FlatFileItemReaderBuilder;
 import org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper;
@@ -18,8 +16,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 import ru.nik.fulltextpr.model.Product;
 
-import javax.sql.DataSource;
-import java.util.Date;
+import javax.persistence.EntityManagerFactory;
 
 @Configuration
 @EnableBatchProcessing
@@ -32,7 +29,7 @@ public class BatchConfig {
     private StepBuilderFactory stepBuilderFactory;
 
     @Autowired
-    private DataSource dataSource;
+    private EntityManagerFactory emf;
 
     @Bean
     public FlatFileItemReader<Product> reader() {
@@ -54,12 +51,10 @@ public class BatchConfig {
     }
 
     @Bean
-    public JdbcBatchItemWriter<Product> writer(DataSource dataSource) {
-        return new JdbcBatchItemWriterBuilder<Product>()
-                .itemSqlParameterSourceProvider(new BeanPropertyItemSqlParameterSourceProvider<>())
-                .sql("INSERT INTO products (id, created_date, last_updated_date, name, description, category, price) VALUES (:id, :createdDate, :lastUpdatedDate, :name, :description, :category, :price)")
-                .dataSource(dataSource)
-                .build();
+    public JpaItemWriter<Product> writer() {
+        JpaItemWriter writer = new JpaItemWriter();
+        writer.setEntityManagerFactory(emf);
+        return writer;
     }
 
     @Bean
@@ -72,9 +67,9 @@ public class BatchConfig {
     }
 
     @Bean
-    public Step step1(JdbcBatchItemWriter<Product> writer) {
+    public Step step1(JpaItemWriter<Product> writer) {
         return stepBuilderFactory.get("step1")
-                .<Product, Product>chunk(10)
+                .<Product, Product>chunk(1000)
                 .reader(reader())
                 .processor(processor())
                 .writer(writer)
