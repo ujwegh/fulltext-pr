@@ -61,9 +61,7 @@ public class ProductDaoImpl implements ProductDao {
 
 
     private FullTextQuery getJpaQuery(org.apache.lucene.search.Query luceneQuery) {
-
         FullTextEntityManager fullTextEntityManager = Search.getFullTextEntityManager(entityManager);
-
         return fullTextEntityManager.createFullTextQuery(luceneQuery, Product.class);
     }
 }

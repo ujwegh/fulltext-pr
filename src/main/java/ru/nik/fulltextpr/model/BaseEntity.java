@@ -1,27 +1,31 @@
 package ru.nik.fulltextpr.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import org.hibernate.search.annotations.*;
 import org.hibernate.search.annotations.Index;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @Getter
+@Setter
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
 @Access(AccessType.FIELD)
 @MappedSuperclass
-public class BaseEntity {
+@EntityListeners(AuditingEntityListener.class)
+public class BaseEntity implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @Field(index = Index.YES, analyze = Analyze.YES, store = Store.NO)
@@ -29,10 +33,10 @@ public class BaseEntity {
 
     @CreatedDate
     @DateBridge(resolution = Resolution.DAY)
-    @Column(nullable = false, updatable = false)
-    private LocalDateTime createdDate;
+    @Column(name = "created_date", nullable = false, updatable = false)
+    private Date createdDate;
 
     @LastModifiedDate
-    @Column(nullable = false)
-    private LocalDateTime lastUpdatedDate;
+    @Column(name = "last_updated_date", nullable = false)
+    private Date lastUpdatedDate;
 }

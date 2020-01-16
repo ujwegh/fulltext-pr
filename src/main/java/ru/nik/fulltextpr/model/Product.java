@@ -5,10 +5,13 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.hibernate.search.annotations.*;
 import org.hibernate.search.annotations.Index;
+import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
 import javax.validation.constraints.Min;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.Date;
 
 @Data
 @ToString(callSuper = true)
@@ -18,6 +21,7 @@ import java.math.BigDecimal;
 @Indexed
 public class Product extends BaseEntity {
 
+    @Length(max = 1000)
     @Field(index = Index.YES, analyze = Analyze.YES, store = Store.NO)
     private String description;
 
@@ -25,8 +29,25 @@ public class Product extends BaseEntity {
     @Field(index = Index.YES, analyze = Analyze.YES, store = Store.NO)
     private BigDecimal price = BigDecimal.ZERO;
 
-    @IndexedEmbedded
-    @ManyToOne(cascade = CascadeType.ALL)
-    private Category category;
+    //    @IndexedEmbedded
+//    @ManyToOne(cascade = CascadeType.ALL)
+    @Field(index = Index.YES, analyze = Analyze.YES, store = Store.NO)
+    private String category;
 
+    public Product() {
+    }
+
+    public Product(String name, String description, String category, BigDecimal price) {
+        super();
+        this.description = description;
+        this.category = category;
+        this.price = price;
+    }
+
+    public Product(Long id, Date createdDate, Date lastUpdatedDate, String name, String description, String category, BigDecimal price) {
+        super(id, name, createdDate, lastUpdatedDate);
+        this.description = description;
+        this.category = category;
+        this.price = price;
+    }
 }
