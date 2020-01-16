@@ -20,7 +20,6 @@ public class ProductServiceImpl implements ProductService {
         this.productDao = productDao;
     }
 
-
     @Override
     public List<Product> getAll(String searchText) {
         return productDao.searchAllProducts(searchText);
